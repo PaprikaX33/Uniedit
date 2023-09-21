@@ -1,5 +1,4 @@
 #+title: Uniedit
 #+author: PaprikaX33
 
-* Uniedit
-  A unicode string generator based on the manual input of unicode codepoint.
+A unicode string generator based on the manual input of unicode codepoint.
