@@ -1,7 +1,7 @@
 /*! Interactive parser for the input output command with the user
  */
 
-//use regex::Regex;
+use regex::Regex;
 
 #[derive(Debug)]
 pub enum EncodingType {
@@ -53,6 +53,6 @@ pub enum Commands<'a> {
 pub fn capture<'a>(inp: &'a str) -> Commands<'a> {
     // "\s*(?:\.(?<cmd>\w+)(?:\|(?<arg>\w+))?(?:\|(?<attr>\w+))?$|\.0x[0-9a-fA-F]+|\.0X[0-9a-fA-F]+|\.x[0-9a-fA-F]+|\.X[0-9a-fA-F]+|\.dd|<raw>)\s*";
     let pattern = r"\s*(?:\\.(?P<cmd>\\w+)(?:\\|(?P<arg>\\w+))?(?:\\|(?P<attr>\\w+))?$|\\.0x[0-9a-fA-F]+|\\.0X[0-9a-fA-F]+|\\.x[0-9a-fA-F]+|\\.X[0-9a-fA-F]+|\\.dd|<raw>)\\s*";
-    //let rex = Regex::new(pattern).unwrap();
+    let rex = Regex::new(pattern).unwrap();
     return Commands::Quit;
 }
