@@ -27,11 +27,14 @@ fn parse_literal_char() {
 
 #[test]
 fn parse_raw() {
-    assert_eq!(capture("230"), Some(Commands::AppendStr([50, 51, 48])));
+    assert_eq!(
+        capture("230"),
+        Some(Commands::AppendStr([50, 51, 48].to_vec()))
+    );
     assert_eq!(
         capture("hello worlds"),
-        Some(Commands::AppendStr([
-            104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 115
-        ]))
+        Some(Commands::AppendStr(
+            [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 115].to_vec()
+        ))
     )
 }

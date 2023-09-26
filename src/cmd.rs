@@ -68,11 +68,11 @@ pub enum Commands {
     Help,
     /// Compress the text in the buffer to NFC representation
     /// # Command
-    /// + `.c`
+    /// `.c`
     Compress,
     /// Decompress the text in the buffer to NFD representation
     /// # Command
-    /// + `.d`
+    /// `.d`
     Decompress,
     /// Append literal unicode codepoint to the buffer
     /// # Command
@@ -106,15 +106,15 @@ pub enum Commands {
     Print(RawBase),
     /// Purge the buffer to empty it
     /// # Command
-    /// + `.e`
+    /// `.e`
     Erase,
     /// Render the buffer to the stdout
     /// # Note
     /// defaulted to UTF-8
     /// # Command
-    /// `.r` : Render to stdout as UTF-8
-    /// `.r32` : Render to stdout as UTF-32 Big Endian
-    /// `.r32LE` : Render to stdout as UTF-32 Little Endian
+    /// + `.r` : Render to stdout as UTF-8
+    /// + `.r32` : Render to stdout as UTF-32 Big Endian
+    /// + `.r32LE` : Render to stdout as UTF-32 Little Endian
     Render(EncodingType),
     /// Validate the current buffer
     /// # Command
@@ -146,13 +146,34 @@ fn parse_cmd_dec(inp: std::str::Chars) -> Option<Commands> {
         Err(_) => None,
     }
 }
+/** Validator check for the trailing input after the no argument command
+
+The commands without any additional argument should consist of only
+the command and the leading and trailing whitespace.
+Additional character after the command is considered as invalid.
+
+# Applicability
+This check is applicabl to the following commmand:
++ `q` Commands::Quit
++ `h` Commands::Help
++ `?` Commands::Help
++ `c` Commands::Compress
++ `d` Commands::Decompress
++ `e` Commands::Erase
++ `v` Commands::Valid
+
+ */
+fn narg_val(text: &str, parsed: Commands) -> Option<Commands> {
+    if text.is_empty() {
+        Some(parsed)
+    } else {
+        None
+    }
+}
 fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
     let mut itr = inp.clone();
     match itr.next()? {
-        'q' => match itr.next() {
-            None => Some(Commands::Quit),
-            Some(_) => None,
-        },
+        'q' => narg_val(itr.as_str(), Commands::Quit),
         _ => parse_cmd_dec(inp),
     }
 }
