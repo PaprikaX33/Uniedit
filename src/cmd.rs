@@ -49,15 +49,12 @@ pub enum Commands {
     Quit,
     /// Write the buffer to a file
     /// # Command
-    /// + `.w` : Write as UTF-8.
-    /// + `.w32` : Write as UTF-32 Big Endian.
-    /// + `.w32LE` : Write as UTF-32 Little Endian.
     /// + `.w <file>` : Write as UTF-8 to *file*.
     /// + `.w32 <file>` : Write as UTF-32 Big Endian to *file*.
     /// + `.w32LE <file>` : Write as UTF-32 Little Endian to *file*.
     Write {
         enc: EncodingType,
-        file: Option<String>,
+        file: String,
     },
     /// The help page of the program
     /// Should print all of the available command and the usage
@@ -79,7 +76,7 @@ pub enum Commands {
     /// + `.0xnnn`
     /// + `.xnnn`
     /// Where `d` is decimal digit, and `n` is hexadecimal digit
-    AppendLit(Option<u32>),
+    AppendLit(u32),
     /// Append the string inserted string to the buffer
     /// # Note
     /// all input that is not prefixed with `.` is considered as the raw append string
@@ -93,14 +90,14 @@ pub enum Commands {
         txt: Vec<u32>,
     },
     Modify {
-        pos: Option<u32>,
-        chr: Option<u32>,
+        pos: u32,
+        chr: u32,
     },
     /// Kill or delete a character from the stream
     /// # Note
     /// All stream following the removed character is pushed forward
     Kill {
-        pos: Option<u32>,
+        pos: u32,
     },
     Print(RawBase),
     /// Purge the buffer to empty it
