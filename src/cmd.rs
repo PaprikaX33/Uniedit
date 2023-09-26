@@ -88,6 +88,9 @@ pub enum Commands<'a> {
         pos: Option<u32>,
         chr: Option<u32>,
     },
+    /// Kill or delete a character from the stream
+    /// # Note
+    /// All stream following the removed character is pushed forward
     Kill {
         pos: Option<u32>,
     },
@@ -149,27 +152,3 @@ fn parse_raw<'a>(inp: &'a str) -> Option<Commands<'a>> {
     }
     Some(Commands::AppendStr(bff))
 }
-
-/*
-//pub fn capture<'a>(inp: &'a str) -> Option<Commands<'a>> {
-#[allow(dead_code)]
-pub fn regex_capture<'a>(inp: &'a str) -> String {
-    // "\s*(?:\.(?<cmd>\w+)(?:\|(?<arg>\w+))?(?:\|(?<attr>\w+))?$|\.0x[0-9a-fA-F]+|\.0X[0-9a-fA-F]+|\.x[0-9a-fA-F]+|\.X[0-9a-fA-F]+|\.dd|<raw>)\s*";
-    //let pattern = r"\s*(?:\\.(?P<cmd>\\w+)(?:\\|(?P<arg>\\w+))?(?:\\|(?P<attr>\\w+))?$|\\.0x[0-9a-fA-F]+|\\.0X[0-9a-fA-F]+|\\.x[0-9a-fA-F]+|\\.X[0-9a-fA-F]+|\\.dd|<raw>)\\s*";
-    let newer_pattern =
-        r"\s*(\.(?P<cmd>\w+)\s*(?P<arg>\w*)\s*(?P<attr>\w*)|(0?x[0-9a-fA-F]+)|(\d+))\s*";
-    let far_newer_pattern = r"\s*(?:\.(?P<cmd>\w+)\s*(?P<arg>\w*)\s*(?P<attr>\w*)|(?:0?[xX](?P<hex>[0-9a-fA-F]+))|(?P<dec>\d+))\s*";
-    // Use r"(?x)" to enter verbose mode
-    let pattern = r"\s*(.<cmd>)|(<chr>\w+)|(<digit>\d+)\s*";
-    let rex = Regex::new(pattern).unwrap();
-    //let captures = rex.captures(inp)?;
-    let Some(captures) = rex.captures(inp) else {return "".to_string();};
-    captures["cmd"].to_string()
-    // match &captures["cmd"] {
-    //     _ => return None,
-    // }
-    // return Some(Commands::Quit);
-}
-*/
-// Actual might working
-//(?mi)^\s*(?:\.(?:(?:0?x(?P<hex>[a-f\d]+))|(?P<dec>\d+)|(?P<cmd>[\?qhecdv])))|(?P<raw>\w+)\s*$
