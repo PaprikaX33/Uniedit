@@ -42,7 +42,7 @@ by asking the user about the parameter.
 #[derive(Debug)]
 #[allow(unused_variables)]
 #[allow(dead_code)]
-pub enum Commands<'a> {
+pub enum Commands {
     /// Quit the program
     /// # Command
     /// + `.q`
@@ -57,7 +57,7 @@ pub enum Commands<'a> {
     /// + `.w32LE <file>` : Write as UTF-32 Little Endian to *file*.
     Write {
         enc: EncodingType,
-        file: Option<&'a str>,
+        file: Option<String>,
     },
     /// The help page of the program
     /// Should print all of the available command and the usage
@@ -84,6 +84,14 @@ pub enum Commands<'a> {
     /// # Note
     /// all input that is not prefixed with `.` is considered as the raw append string
     AppendStr(Vec<u32>),
+    InsertLit {
+        pos: u32,
+        chr: u32,
+    },
+    InsertStr {
+        pos: u32,
+        txt: Vec<u32>,
+    },
     Modify {
         pos: Option<u32>,
         chr: Option<u32>,
@@ -123,21 +131,29 @@ let input = ".m20";
 match capture(input) {...};
 ```
 */
-pub fn capture<'a>(inp: &'a str) -> Option<Commands<'a>> {
+pub fn capture(inp: &str) -> Option<Commands> {
     let trm = inp.trim();
     match trm.strip_prefix('.') {
-        Some(cmd) => Some(Commands::Quit), //Command
-        None => parse_raw(trm),            //Not a command
+        Some(cmd) => parse_cmd_selection(cmd.chars()), //Command
+        None => parse_raw(trm),                        //Not a command
     }
 }
 
-fn parse_raw<'a>(inp: &'a str) -> Option<Commands<'a>> {
+fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
+    let mut itr = inp;
+    match itr.next().unwrap() {
+        'q' => Some(Commands::Quit),
+        _ => Some(Commands::Quit),
+    }
+}
+
+fn parse_raw(inp: &str) -> Option<Commands> {
     let mut bff: Vec<u32> = Vec::new();
     let mut iters = inp.chars();
     while let Some(chr) = iters.next() {
         match chr {
             '\\' => {
-                let Some(nxt) = iters.next() else {return None};
+                let Some(nxt) = iters.next() else { return None };
                 match nxt {
                     //' ' => bff.push(0x20),
                     ' ' => bff.push(' ' as u32),
