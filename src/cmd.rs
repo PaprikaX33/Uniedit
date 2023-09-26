@@ -19,7 +19,7 @@ pub enum EncodingType {
 
 The buffer of the text can be printed in the hex form, or decimal form.
 This enum is a tag for whether to print it as a hex form or decimal.
-*/
+ */
 #[derive(Debug)]
 #[allow(unused_variables)]
 #[allow(dead_code)]
@@ -130,7 +130,7 @@ Parse the input string, and return the possible command to be executed.
 let input = ".m20";
 match capture(input) {...};
 ```
-*/
+ */
 pub fn capture(inp: &str) -> Option<Commands> {
     let trm = inp.trim();
     match trm.strip_prefix('.') {
@@ -154,14 +154,13 @@ fn parse_raw(inp: &str) -> Option<Commands> {
         match chr {
             '\\' => {
                 let Some(nxt) = iters.next() else { return None };
-                match nxt {
-                    //' ' => bff.push(0x20),
-                    ' ' => bff.push(' ' as u32),
-                    'n' => bff.push('\n' as u32),
-                    't' => bff.push('\t' as u32),
-                    '\\' => bff.push('\\' as u32),
+                bff.push(match nxt {
+                    ' ' => ' ' as u32,
+                    'n' => '\n' as u32,
+                    't' => '\t' as u32,
+                    '\\' => '\\' as u32,
                     _ => return None,
-                }
+                })
             }
             _ => bff.push(chr as u32), // No escape
         }
