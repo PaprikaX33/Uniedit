@@ -5,6 +5,8 @@
 mod testing;
 //use regex::Regex;
 
+/** Encoding type for the writing and rendering
+ */
 #[derive(Debug, Eq, PartialEq)]
 #[allow(unused_variables)]
 #[allow(dead_code)]
