@@ -136,11 +136,17 @@ pub fn capture(inp: &str) -> Option<Commands> {
     }
 }
 
+fn parse_cmd_dec(inp: std::str::Chars) -> Option<Commands> {
+    match inp.as_str().parse::<u32>() {
+        Ok(val) => Some(Commands::AppendLit(val)),
+        Err(_) => None,
+    }
+}
 fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
-    let mut itr = inp;
+    let mut itr = inp.clone();
     match itr.next().unwrap() {
         'q' => Some(Commands::Quit),
-        _ => Some(Commands::Quit),
+        _ => parse_cmd_dec(inp),
     }
 }
 
