@@ -1,9 +1,11 @@
-/*! Interactive parser for the input output command with the user
+/*! Parser for the input output command with the user
  */
 
+#[cfg(test)]
+mod testing;
 //use regex::Regex;
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 #[allow(unused_variables)]
 #[allow(dead_code)]
 pub enum EncodingType {
@@ -20,7 +22,7 @@ pub enum EncodingType {
 The buffer of the text can be printed in the hex form, or decimal form.
 This enum is a tag for whether to print it as a hex form or decimal.
  */
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 #[allow(unused_variables)]
 #[allow(dead_code)]
 pub enum RawBase {
@@ -39,7 +41,7 @@ and optional information required to execute the command.
 Some commands are having optional argument, and the parameter can be obtained
 by asking the user about the parameter.
  */
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 #[allow(unused_variables)]
 #[allow(dead_code)]
 pub enum Commands {
@@ -144,8 +146,11 @@ fn parse_cmd_dec(inp: std::str::Chars) -> Option<Commands> {
 }
 fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
     let mut itr = inp.clone();
-    match itr.next().unwrap() {
-        'q' => Some(Commands::Quit),
+    match itr.next()? {
+        'q' => match itr.next() {
+            None => Some(Commands::Quit),
+            Some(_) => None,
+        },
         _ => parse_cmd_dec(inp),
     }
 }
@@ -156,7 +161,7 @@ fn parse_raw(inp: &str) -> Option<Commands> {
     while let Some(chr) = iters.next() {
         match chr {
             '\\' => {
-                let Some(nxt) = iters.next() else { return None };
+                let nxt = iters.next()?;
                 bff.push(match nxt {
                     ' ' => ' ' as u32,
                     'n' => '\n' as u32,
