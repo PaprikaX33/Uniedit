@@ -52,10 +52,7 @@ pub enum Commands {
     /// + `.w <file>` : Write as UTF-8 to *file*.
     /// + `.w32 <file>` : Write as UTF-32 Big Endian to *file*.
     /// + `.w32LE <file>` : Write as UTF-32 Little Endian to *file*.
-    Write {
-        enc: EncodingType,
-        file: String,
-    },
+    Write { enc: EncodingType, file: String },
     /// The help page of the program
     /// Should print all of the available command and the usage
     /// # Command
@@ -103,10 +100,7 @@ pub enum Commands {
     /// as listed in [AppendLit](Commands::AppendLit).
     ///
     /// Additional information see [AppendLit](Commands::AppendLit).
-    InsertLit {
-        pos: u32,
-        chr: u32,
-    },
+    InsertLit { pos: u32, chr: u32 },
     /// Performs string insertion in position in the buffer
     /// # Command
     /// + `.iddd <str>`
@@ -121,10 +115,7 @@ pub enum Commands {
     /// see escaping in [AppendStr](Commands::AppendStr).
     ///
     /// Additional information see [AppendLit](Commands::AppendLit).
-    InsertStr {
-        pos: u32,
-        txt: Vec<u32>,
-    },
+    InsertStr { pos: u32, txt: Vec<u32> },
     /// Modify or replace a codepoint in position
     /// # Command
     /// + `.mddd <codepoint>`
@@ -133,16 +124,18 @@ pub enum Commands {
     ///
     /// As it it only capable to replace a single character, a leading `.` to denote codepoint
     /// is not required.
-    Modify {
-        pos: u32,
-        chr: u32,
-    },
+    Modify { pos: u32, chr: u32 },
     /// Kill or delete a character from the stream
     /// # Note
     /// All stream following the removed character is pushed forward
-    Kill {
-        pos: u32,
-    },
+    Kill { pos: u32 },
+    /// Print the current buffer
+    ///
+    /// Printing the buffer does not render the content of the buffer to the unicode,
+    /// but rather prints the codepoints in the buffer.
+    /// # Command
+    /// `.p` Print the codepoint as decimal
+    /// `.px` Print the codepoint as hexadecimal
     Print(RawBase),
     /// Purge the buffer to empty it
     /// # Command

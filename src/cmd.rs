@@ -29,13 +29,14 @@ pub fn capture(inp: &str) -> Option<Commands> {
 fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
     let mut itr = inp.clone();
     match itr.next()?.to_lowercase().next()? {
-        'q' => narg_val(itr.as_str(), Commands::Quit),
-        '?' => narg_val(itr.as_str(), Commands::Help),
-        'h' => narg_val(itr.as_str(), Commands::Help),
-        'c' => narg_val(itr.as_str(), Commands::Compress),
-        'd' => narg_val(itr.as_str(), Commands::Decompress),
-        'e' => narg_val(itr.as_str(), Commands::Erase),
-        'v' => narg_val(itr.as_str(), Commands::Valid),
+        'q' => final_check(itr, Commands::Quit),
+        '?' => final_check(itr, Commands::Help),
+        'h' => final_check(itr, Commands::Help),
+        'c' => final_check(itr, Commands::Compress),
+        'd' => final_check(itr, Commands::Decompress),
+        'e' => final_check(itr, Commands::Erase),
+        'v' => final_check(itr, Commands::Valid),
+        'p' => parse_print(itr),
         _ => parse_cmd_dec(inp),
     }
 }
@@ -66,4 +67,8 @@ fn parse_raw(inp: &str) -> Option<Commands> {
         }
     }
     Some(Commands::AppendStr(bff))
+}
+
+fn parse_print(inp: std::str::Chars) -> Option<Commands> {
+    todo!();
 }

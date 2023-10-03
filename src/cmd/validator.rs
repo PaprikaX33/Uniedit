@@ -24,8 +24,8 @@ This check is valid for the following commmand:
 + `v` Commands::Valid
 
  */
-pub fn narg_val(text: &str, parsed: Commands) -> Option<Commands> {
-    if text.is_empty() {
+pub fn final_check(text: std::str::Chars, parsed: Commands) -> Option<Commands> {
+    if text.as_str().is_empty() {
         Some(parsed)
     } else {
         None
