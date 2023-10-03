@@ -28,8 +28,14 @@ pub fn capture(inp: &str) -> Option<Commands> {
 
 fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
     let mut itr = inp.clone();
-    match itr.next()? {
+    match itr.next()?.to_lowercase().next()? {
         'q' => narg_val(itr.as_str(), Commands::Quit),
+        '?' => narg_val(itr.as_str(), Commands::Help),
+        'h' => narg_val(itr.as_str(), Commands::Help),
+        'c' => narg_val(itr.as_str(), Commands::Compress),
+        'd' => narg_val(itr.as_str(), Commands::Decompress),
+        'e' => narg_val(itr.as_str(), Commands::Erase),
+        'v' => narg_val(itr.as_str(), Commands::Valid),
         _ => parse_cmd_dec(inp),
     }
 }

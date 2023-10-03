@@ -15,6 +15,33 @@ fn parse_quit() {
     assert_eq!(capture(".quuu"), None);
 }
 #[test]
+fn parse_help() {
+    assert_eq!(capture(".h"), Some(Commands::Help));
+    assert_eq!(capture(".?"), Some(Commands::Help));
+    assert_eq!(capture(".hasd"), None);
+    assert_eq!(capture(".??uuu"), None);
+}
+#[test]
+fn parse_compress() {
+    assert_eq!(capture(".c"), Some(Commands::Compress));
+    assert_eq!(capture(".cuuu"), None);
+}
+#[test]
+fn parse_decompress() {
+    assert_eq!(capture(".d"), Some(Commands::Decompress));
+    assert_eq!(capture(".duuu"), None);
+}
+#[test]
+fn parse_erase() {
+    assert_eq!(capture(".e"), Some(Commands::Erase));
+    assert_eq!(capture(".euuu"), None);
+}
+#[test]
+fn parse_valid() {
+    assert_eq!(capture(".v"), Some(Commands::Valid));
+    assert_eq!(capture(".vuuu"), None);
+}
+#[test]
 fn parse_literal_char() {
     assert_eq!(capture(".20"), Some(Commands::AppendLit(20)));
     assert_eq!(capture("    .4294967297"), None);
