@@ -58,6 +58,7 @@ fn parse_raw(inp: &str) -> Option<Commands> {
                     'n' => '\n' as u32,
                     't' => '\t' as u32,
                     '\\' => '\\' as u32,
+                    '.' => '.' as u32,
                     _ => return None,
                 })
             }

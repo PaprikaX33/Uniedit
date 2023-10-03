@@ -75,20 +75,64 @@ pub enum Commands {
     /// + `.ddd`
     /// + `.0xnnn`
     /// + `.xnnn`
+    ///
     /// Where `d` is decimal digit, and `n` is hexadecimal digit
     AppendLit(u32),
     /// Append the string inserted string to the buffer
     /// # Note
-    /// all input that is not prefixed with `.` is considered as the raw append string
+    /// All input that is not prefixed with `.` is considered as the raw append string
+    /// # Escaping
+    /// To escape the literal `.` character in the begining of the string, a `\` escape character can be used.
+    /// Additionally a limited number escape characters sequence can be used.
+    /// The following is all of the possible escape character
+    /// + `\<space>` => `<space>` : A space character.
+    /// + `\t` => `<tab>` : A tab character.
+    /// + `\n` => `<newline>` : ca newline character. Interpretted as linefeed character.
+    /// + `\\` => `\` : A literal backslash character.
+    /// + `\.` => `.` : A literal dot character. Note: Escape is only required in front of the string.
     AppendStr(Vec<u32>),
+    /// Performs literal unicode codepoint insertion to the position in the buffer.
+    /// # Command
+    /// + `.iddd <codepoint>`
+    /// + `.innn <codepoint>`
+    /// + `.ixnnn <codepoint>`
+    ///
+    /// Where `d` is decimal digit, and `n` is hexadecimal digit
+    /// # Note
+    /// Codepoint must be properly marked with a leading `.` and have the same formatting
+    /// as listed in [AppendLit](Commands::AppendLit).
+    ///
+    /// Additional information see [AppendLit](Commands::AppendLit).
     InsertLit {
         pos: u32,
         chr: u32,
     },
+    /// Performs string insertion in position in the buffer
+    /// # Command
+    /// + `.iddd <str>`
+    /// + `.innn <str>`
+    /// + `.ixnnn <str>`
+    ///
+    /// Where `d` is decimal digit, and `n` is hexadecimal digit
+    /// # Note
+    /// `<str>` must not contain a leading `.` in the string,
+    /// otherwise it can be mistaken as [InsertLit](Commands::InsertLit).
+    ///
+    /// see escaping in [AppendStr](Commands::AppendStr).
+    ///
+    /// Additional information see [AppendLit](Commands::AppendLit).
     InsertStr {
         pos: u32,
         txt: Vec<u32>,
     },
+    /// Modify or replace a codepoint in position
+    /// # Command
+    /// + `.mddd <codepoint>`
+    /// + `.mnnn <codepoint>`
+    /// + `.mxnnn <codepoint>`
+    ///
+    /// As it it only capable to replace a single character, a leading `.` to denote codepoint
+    /// is not required.
     Modify {
         pos: u32,
         chr: u32,
