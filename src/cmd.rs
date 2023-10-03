@@ -37,6 +37,7 @@ fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
         'e' => final_check(itr, Commands::Erase),
         'v' => final_check(itr, Commands::Valid),
         'p' => parse_print(itr),
+        'k' => parse_kill(itr),
         _ => parse_cmd_dec(inp),
     }
 }
@@ -68,7 +69,38 @@ fn parse_raw(inp: &str) -> Option<Commands> {
     }
     Some(Commands::AppendStr(bff))
 }
-
+fn parse_kill(inp: std::str::Chars) -> Option<Commands> {
+    let mut itr = inp.clone();
+    if itr.next()? != ' ' {
+        return None;
+    }
+    let strfm = itr.as_str();
+    let strpfm = strfm.strip_prefix('0').unwrap_or(strfm);
+    // use this ::: i64::from_str_radix
+    match strpfm.strip_prefix('x') {
+        Some(rest) =>
+        // In hex
+        {
+            match u32::from_str_radix(rest, 16) {
+                Ok(val) => Some(Commands::Kill { pos: val }),
+                _ => None,
+            }
+        }
+        None =>
+        //In dec
+        {
+            match strfm.parse::<u32>() {
+                Ok(val) => Some(Commands::Kill { pos: val }),
+                Err(_) => None,
+            }
+        }
+    }
+    /*
+    let appr = itr.next()?;
+    if appr == 'x' || (appr == '0' && itr.next()? == 'x') {
+        // do hexadecimal parsing
+    }*/
+}
 fn parse_print(inp: std::str::Chars) -> Option<Commands> {
     let mut itr = inp.clone();
     match itr.next() {

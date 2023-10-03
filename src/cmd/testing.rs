@@ -41,6 +41,17 @@ fn parse_valid() {
     assert_eq!(capture(".v"), Some(Commands::Valid));
     assert_eq!(capture(".vuuu"), None);
 }
+
+#[test]
+fn parse_kill() {
+    assert_eq!(capture(".k 032"), Some(Commands::Kill { pos: 032 }));
+    assert_eq!(capture(".k 0x2f"), Some(Commands::Kill { pos: 0x2f }));
+    assert_eq!(capture(".k x7b"), Some(Commands::Kill { pos: 0x7b }));
+    assert_eq!(capture(".k32"), None);
+    assert_eq!(capture(".k32ff"), None);
+    assert_eq!(capture(".k 0x32ba"), Some(Commands::Kill { pos: 0x32ba }));
+    assert_eq!(capture(".k 20f"), None);
+}
 #[test]
 fn parse_print() {
     assert_eq!(capture(".p"), Some(Commands::Print(RawBase::Dec)));
@@ -52,6 +63,7 @@ fn parse_print() {
 #[test]
 fn parse_literal_char() {
     assert_eq!(capture(".20"), Some(Commands::AppendLit(20)));
+    assert_eq!(capture(".2c"), None);
     assert_eq!(capture("    .4294967297"), None);
     assert_eq!(capture("    .4294967296  "), None);
     assert_eq!(
