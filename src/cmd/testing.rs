@@ -3,8 +3,8 @@
 The testing for the input parsing will be located in here
  */
 
-use super::capture;
-use super::Commands;
+use super::*;
+
 #[test]
 fn parse_invalid() {
     assert_eq!(capture("."), None);
@@ -42,6 +42,14 @@ fn parse_valid() {
     assert_eq!(capture(".vuuu"), None);
 }
 #[test]
+fn parse_print() {
+    assert_eq!(capture(".p"), Some(Commands::Print(RawBase::Dec)));
+    assert_eq!(capture(".px"), Some(Commands::Print(RawBase::Hex)));
+    assert_eq!(capture(".pu"), None);
+    assert_eq!(capture(".pxaha"), None);
+    assert_eq!(capture(".px no"), None);
+}
+#[test]
 fn parse_literal_char() {
     assert_eq!(capture(".20"), Some(Commands::AppendLit(20)));
     assert_eq!(capture("    .4294967297"), None);
@@ -51,7 +59,6 @@ fn parse_literal_char() {
         Some(Commands::AppendLit(4294967295))
     );
 }
-
 #[test]
 fn parse_raw() {
     assert_eq!(

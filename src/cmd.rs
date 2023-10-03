@@ -70,5 +70,10 @@ fn parse_raw(inp: &str) -> Option<Commands> {
 }
 
 fn parse_print(inp: std::str::Chars) -> Option<Commands> {
-    todo!();
+    let mut itr = inp.clone();
+    match itr.next() {
+        Some('x') => final_check(itr, Commands::Print(RawBase::Hex)),
+        None => final_check(itr, Commands::Print(RawBase::Dec)),
+        _ => None,
+    }
 }
