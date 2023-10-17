@@ -46,5 +46,5 @@ pub fn string_exact_check<'a>(
             return (false, cmd);
         }
     }
-    return (true, cmd);
+    (true, cmd)
 }

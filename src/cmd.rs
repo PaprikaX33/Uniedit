@@ -37,6 +37,7 @@ fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
         'e' => final_check(itr, Commands::Erase),
         'v' => final_check(itr, Commands::Valid),
         'p' => parse_print(itr),
+        'r' => parse_render(itr),
         'k' => parse_kill(itr),
         _ => parse_cmd_dec(inp),
     }
@@ -108,4 +109,17 @@ fn parse_print(inp: std::str::Chars) -> Option<Commands> {
         None => final_check(itr, Commands::Print(RawBase::Dec)),
         _ => None,
     }
+}
+
+fn parse_render(inp: std::str::Chars) -> Option<Commands> {
+    let (is_not_basic, itr) = string_exact_check(inp, "32".chars());
+    if !is_not_basic {
+        return Some(Commands::Render(EncodingType::UTF8));
+    }
+    let (is_le, _) = string_exact_check(itr, "le".chars());
+    Some(Commands::Render(if is_le {
+        EncodingType::UTF32LE
+    } else {
+        EncodingType::UTF32
+    }))
 }
