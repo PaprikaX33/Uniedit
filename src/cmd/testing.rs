@@ -44,7 +44,7 @@ fn parse_valid() {
 
 #[test]
 fn parse_kill() {
-    assert_eq!(capture(".k 032"), Some(Commands::Kill { pos: 032 }));
+    assert_eq!(capture(".k 032"), Some(Commands::Kill { pos: 32 }));
     assert_eq!(capture(".k 0x2f"), Some(Commands::Kill { pos: 0x2f }));
     assert_eq!(capture(".k x7b"), Some(Commands::Kill { pos: 0x7b }));
     assert_eq!(capture(".k32"), None);

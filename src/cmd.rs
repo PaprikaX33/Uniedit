@@ -108,11 +108,11 @@ fn parse_print(inp: std::str::Chars) -> Option<Commands> {
 }
 
 fn parse_render(inp: std::str::Chars) -> Option<Commands> {
-    let (is_not_basic, itr) = string_exact_check(&inp, &"32".chars());
+    let (is_not_basic, itr) = string_exact_check(inp.clone(), "32".chars());
     if !is_not_basic {
         return final_check(inp, Commands::Render(EncodingType::UTF8));
     }
-    let (is_le, itr) = string_exact_check(&itr, &"le".chars());
+    let (is_le, itr) = string_exact_check(itr, "le".chars());
     final_check(
         itr,
         Commands::Render(if is_le {

@@ -33,12 +33,11 @@ pub fn final_check(text: std::str::Chars, parsed: Commands) -> Option<Commands> 
 }
 
 pub fn string_exact_check<'a>(
-    sample: &std::str::Chars<'a>,
-    command: &std::str::Chars,
+    sample: std::str::Chars<'a>,
+    cmd: std::str::Chars,
 ) -> (bool, std::str::Chars<'a>) {
     let mut smp = sample.clone();
-    let mut cmd = command.clone();
-    while let Some(x) = cmd.next() {
+    for x in cmd {
         if !x.to_lowercase().eq(match smp.next() {
             None => return (false, smp),
             Some(y) => y,
