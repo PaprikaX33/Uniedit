@@ -31,3 +31,20 @@ pub fn final_check(text: std::str::Chars, parsed: Commands) -> Option<Commands> 
         None
     }
 }
+
+pub fn string_exact_check<'a>(
+    sample: std::str::Chars,
+    command: std::str::Chars<'a>,
+) -> (bool, std::str::Chars<'a>) {
+    let mut smp = sample.clone();
+    let mut cmd = command.clone();
+    while let Some(x) = cmd.next() {
+        if x != match smp.next() {
+            None => return (false, cmd),
+            Some(y) => y,
+        } {
+            return (false, cmd);
+        }
+    }
+    return (true, cmd);
+}
