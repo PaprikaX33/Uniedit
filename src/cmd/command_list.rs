@@ -94,7 +94,7 @@ pub enum Commands {
     /// Performs literal unicode codepoint insertion to the position in the buffer.
     /// # Command
     /// + `.iddd <codepoint>`
-    /// + `.innn <codepoint>`
+    /// + `.i0xnnn <codepoint>`
     /// + `.ixnnn <codepoint>`
     ///
     /// Where `d` is decimal digit, and `n` is hexadecimal digit
@@ -107,7 +107,7 @@ pub enum Commands {
     /// Performs string insertion in position in the buffer
     /// # Command
     /// + `.iddd <str>`
-    /// + `.innn <str>`
+    /// + `.i0xnnn <str>`
     /// + `.ixnnn <str>`
     ///
     /// Where `d` is decimal digit, and `n` is hexadecimal digit
@@ -122,11 +122,11 @@ pub enum Commands {
     /// Modify or replace a codepoint in position
     /// # Command
     /// + `.mddd <codepoint>`
-    /// + `.mnnn <codepoint>`
+    /// + `.m0xnnn <codepoint>`
     /// + `.mxnnn <codepoint>`
     ///
     /// As it is only capable to replace a single character, a leading `.` to denote codepoint
-    /// is not required.
+    /// is not required, but for clarity, a leading . is recomended.
     Modify { pos: u32, chr: u32 },
     /// Kill or delete a character from the stream
     /// # Command

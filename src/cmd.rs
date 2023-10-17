@@ -141,7 +141,6 @@ where
     F: Fn(&str) -> Option<Commands>,
 {
     let mut itr = inp;
-    println!("rear: {}", itr.as_str());
     if itr.next()? != ' ' {
         return None;
     }
