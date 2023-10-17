@@ -121,14 +121,21 @@ fn parse_write() {
     assert_eq!(
         capture(".w32 ./nyaaa"),
         Some(Commands::Write {
-            enc: EncodingType::UTF8,
+            enc: EncodingType::UTF32,
             file: "./nyaaa".to_string(),
+        })
+    );
+    assert_eq!(
+        capture(".w32lE ./nya"),
+        Some(Commands::Write {
+            enc: EncodingType::UTF32LE,
+            file: "./nya".to_string(),
         })
     );
     assert_eq!(
         capture(".w32LE ./nyaaa"),
         Some(Commands::Write {
-            enc: EncodingType::UTF8,
+            enc: EncodingType::UTF32LE,
             file: "./nyaaa".to_string(),
         })
     );

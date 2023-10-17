@@ -39,12 +39,12 @@ pub fn string_exact_check<'a>(
     let mut smp = sample.clone();
     for x in cmd {
         if !x.to_lowercase().eq(match smp.next() {
-            None => return (false, smp),
+            None => return (false, sample),
             Some(y) => y,
         }
         .to_lowercase())
         {
-            return (false, smp);
+            return (false, sample);
         }
     }
     (true, smp)
