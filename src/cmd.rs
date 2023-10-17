@@ -40,6 +40,7 @@ fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
         'p' => parse_print(itr),
         'r' => parse_render(itr),
         'k' => parse_kill(itr),
+        'i' => parse_insertion(itr),
         _ => parse_cmd_dec(inp),
     }
 }
@@ -135,16 +136,10 @@ fn parse_write(inp: std::str::Chars) -> Option<Commands> {
         })
     }
 }
-
-fn parse_rear<F>(inp: std::str::Chars, clos: F) -> Option<Commands>
-where
-    F: Fn(&str) -> Option<Commands>,
-{
-    let mut itr = inp;
-    if itr.next()? != ' ' {
-        return None;
-    }
-    return clos(itr.as_str());
+fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
+    let content = inp.as_str().splitn(2, ' ');
+    return None;
+    todo!();
 }
 
 fn parse_render(inp: std::str::Chars) -> Option<Commands> {
@@ -161,4 +156,15 @@ fn parse_render(inp: std::str::Chars) -> Option<Commands> {
             EncodingType::UTF32
         }),
     )
+}
+
+fn parse_rear<F>(inp: std::str::Chars, clos: F) -> Option<Commands>
+where
+    F: Fn(&str) -> Option<Commands>,
+{
+    let mut itr = inp;
+    if itr.next()? != ' ' {
+        return None;
+    }
+    return clos(itr.as_str());
 }
