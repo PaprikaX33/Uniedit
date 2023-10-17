@@ -84,3 +84,27 @@ fn parse_raw() {
         ))
     )
 }
+
+#[test]
+fn parse_render() {
+    assert_eq!(capture(".r"), Some(Commands::Render(EncodingType::UTF8)));
+    assert_eq!(capture(".r32"), Some(Commands::Render(EncodingType::UTF32)));
+    assert_eq!(
+        capture(".r32LE"),
+        Some(Commands::Render(EncodingType::UTF32LE))
+    );
+    assert_eq!(
+        capture(".r32le"),
+        Some(Commands::Render(EncodingType::UTF32LE))
+    );
+    assert_eq!(
+        capture(".r32lE"),
+        Some(Commands::Render(EncodingType::UTF32LE))
+    );
+    assert_eq!(capture(".ra"), None);
+    assert_eq!(capture(".r32uu"), None);
+    assert_eq!(capture(".r a"), None);
+    assert_eq!(capture(".r99"), None);
+    assert_eq!(capture(".r32LEaser"), None);
+    assert_eq!(capture(".r32lLea"), None);
+}
