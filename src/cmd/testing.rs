@@ -108,3 +108,30 @@ fn parse_render() {
     assert_eq!(capture(".r32LEaser"), None);
     assert_eq!(capture(".r32lLea"), None);
 }
+
+#[test]
+fn parse_write() {
+    assert_eq!(
+        capture(".w ./nyaaa"),
+        Some(Commands::Write {
+            enc: EncodingType::UTF8,
+            file: "./nyaaa".to_string(),
+        })
+    );
+    assert_eq!(
+        capture(".w32 ./nyaaa"),
+        Some(Commands::Write {
+            enc: EncodingType::UTF8,
+            file: "./nyaaa".to_string(),
+        })
+    );
+    assert_eq!(
+        capture(".w32LE ./nyaaa"),
+        Some(Commands::Write {
+            enc: EncodingType::UTF8,
+            file: "./nyaaa".to_string(),
+        })
+    );
+    assert_eq!(capture(".w32BE ./nyaaa"), None);
+    assert_eq!(capture(".w32./nyaaa"), None);
+}
