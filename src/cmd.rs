@@ -112,27 +112,27 @@ fn parse_write(inp: std::str::Chars) -> Option<Commands> {
     let (is_32, itr) = string_exact_check(inp.clone(), "32".chars());
     if !is_32 {
         return parse_rear(itr.clone(), |fpath| {
-            return Some(Commands::Write {
+            Some(Commands::Write {
                 enc: EncodingType::UTF8,
                 file: fpath.to_string(),
-            });
+            })
         });
     }
     let (is_le, itr) = string_exact_check(itr, "le".chars());
     if !is_le {
-        return parse_rear(itr.clone(), |fpath| {
-            return Some(Commands::Write {
+        parse_rear(itr.clone(), |fpath| {
+            Some(Commands::Write {
                 enc: EncodingType::UTF32,
                 file: fpath.to_string(),
-            });
-        });
+            })
+        })
     } else {
-        return parse_rear(itr.clone(), |fpath| {
-            return Some(Commands::Write {
+        parse_rear(itr.clone(), |fpath| {
+            Some(Commands::Write {
                 enc: EncodingType::UTF32LE,
                 file: fpath.to_string(),
-            });
-        });
+            })
+        })
     }
 }
 
