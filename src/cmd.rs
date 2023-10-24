@@ -55,7 +55,7 @@ fn parse_cmd_dec(inp: std::str::Chars) -> Option<Commands> {
     }
 }
 fn parse_raw(inp: &str) -> Option<Commands> {
-    return Some(Commands::AppendStr(parse_raw_escapement(inp.chars())?));
+    Some(Commands::AppendStr(parse_raw_escapement(inp.chars())?))
 }
 
 fn parse_raw_escapement(inp: std::str::Chars) -> Option<Vec<u32>> {
@@ -84,9 +84,9 @@ fn parse_kill(inp: std::str::Chars) -> Option<Commands> {
     if itr.next()? != ' ' {
         return None;
     }
-    return Some(Commands::Kill {
+    Some(Commands::Kill {
         pos: parse_number_value(itr)?,
-    });
+    })
 }
 
 fn parse_number_value(inp: std::str::Chars) -> Option<u32> {
@@ -123,15 +123,13 @@ fn parse_print(inp: std::str::Chars) -> Option<Commands> {
 }
 
 fn parse_modify(inp: std::str::Chars) -> Option<Commands> {
-    let mut content = inp.as_str().splitn(2, ' ');
-    let ps = content.next()?;
-    let cp = content.next()?;
+    let (ps, cp) = inp.as_str().split_once(' ')?;
     let loc = parse_number_value(ps.chars())?;
     let cptrim = cp.strip_prefix('.').unwrap_or(cp);
-    return match cptrim.parse::<u32>() {
+    match cptrim.parse::<u32>() {
         Ok(val) => Some(Commands::Modify { pos: loc, chr: val }),
         Err(_) => None,
-    };
+    }
 }
 fn parse_write(inp: std::str::Chars) -> Option<Commands> {
     let (is_32, itr) = string_exact_check(inp.clone(), "32".chars());
@@ -161,9 +159,7 @@ fn parse_write(inp: std::str::Chars) -> Option<Commands> {
     }
 }
 fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
-    let mut content = inp.as_str().splitn(2, ' ');
-    let ps = content.next()?;
-    let path = content.next()?;
+    let (ps, path) = inp.as_str().split_once(' ')?;
     let loc = parse_number_value(ps.chars())?;
     let mut startpol = path.chars();
     if startpol.next()? == '.' {
@@ -174,10 +170,10 @@ fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
         }
     } else {
         // Non literal mode
-        return Some(Commands::InsertStr {
+        Some(Commands::InsertStr {
             pos: loc,
             txt: parse_raw_escapement(path.chars())?,
-        });
+        })
     }
 }
 
