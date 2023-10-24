@@ -86,6 +86,48 @@ fn parse_raw() {
 }
 
 #[test]
+fn parse_insertion_string() {
+    assert_eq!(
+        capture(".i29 hello"),
+        Some(Commands::InsertStr {
+            pos: 29,
+            txt: [104, 101, 108, 108, 111].to_vec()
+        })
+    );
+    assert_eq!(
+        capture(".ix30 hello"),
+        Some(Commands::InsertStr {
+            pos: 0x30,
+            txt: [104, 101, 108, 108, 111].to_vec()
+        })
+    );
+    assert_eq!(
+        capture(".i0x19 hello"),
+        Some(Commands::InsertStr {
+            pos: 0x19,
+            txt: [104, 101, 108, 108, 111].to_vec()
+        })
+    );
+    assert_eq!(
+        capture(".i29 .2000"),
+        Some(Commands::InsertLit { pos: 29, chr: 2000 })
+    );
+    assert_eq!(
+        capture(".ix30 .10"),
+        Some(Commands::InsertLit { pos: 0x30, chr: 10 })
+    );
+    assert_eq!(
+        capture(".i0x19 .300"),
+        Some(Commands::InsertLit {
+            pos: 0x19,
+            chr: 300,
+        })
+    );
+    assert_eq!(capture(".i0x19.300"), None);
+    assert_eq!(capture(".i0x19e300"), None);
+    assert_eq!(capture(".i0x19300"), None);
+}
+#[test]
 fn parse_render() {
     assert_eq!(capture(".r"), Some(Commands::Render(EncodingType::UTF8)));
     assert_eq!(capture(".r32"), Some(Commands::Render(EncodingType::UTF32)));

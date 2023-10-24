@@ -26,6 +26,9 @@ pub fn capture(inp: &str) -> Option<Commands> {
     }
 }
 
+/*
+TODO : get the format for literal to use the hexadecimal aswell
+*/
 fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
     let mut itr = inp.clone();
     match itr.next()?.to_lowercase().next()? {
@@ -50,10 +53,13 @@ fn parse_cmd_dec(inp: std::str::Chars) -> Option<Commands> {
         Err(_) => None,
     }
 }
-
 fn parse_raw(inp: &str) -> Option<Commands> {
+    return Some(Commands::AppendStr(parse_raw_escapement(inp.chars())?));
+}
+
+fn parse_raw_escapement(inp: std::str::Chars) -> Option<Vec<u32>> {
     let mut bff: Vec<u32> = Vec::new();
-    let mut iters = inp.chars();
+    let mut iters = inp.clone();
     while let Some(chr) = iters.next() {
         match chr {
             '\\' => {
@@ -70,7 +76,7 @@ fn parse_raw(inp: &str) -> Option<Commands> {
             _ => bff.push(chr as u32), // No escape
         }
     }
-    Some(Commands::AppendStr(bff))
+    Some(bff)
 }
 fn parse_kill(inp: std::str::Chars) -> Option<Commands> {
     let mut itr = inp.clone();
@@ -94,6 +100,30 @@ fn parse_kill(inp: std::str::Chars) -> Option<Commands> {
         {
             match strfm.parse::<u32>() {
                 Ok(val) => Some(Commands::Kill { pos: val }),
+                Err(_) => None,
+            }
+        }
+    }
+}
+
+fn parse_number_value(inp: std::str::Chars) -> Option<u32> {
+    let strfm = inp.as_str();
+    let strpfm = strfm.strip_prefix('0').unwrap_or(strfm);
+    // use this ::: i64::from_str_radix
+    match strpfm.strip_prefix('x') {
+        Some(rest) =>
+        // In hex
+        {
+            match u32::from_str_radix(rest, 16) {
+                Ok(val) => Some(val),
+                _ => None,
+            }
+        }
+        None =>
+        //In dec
+        {
+            match strfm.parse::<u32>() {
+                Ok(val) => Some(val),
                 Err(_) => None,
             }
         }
@@ -137,9 +167,26 @@ fn parse_write(inp: std::str::Chars) -> Option<Commands> {
     }
 }
 fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
-    let content = inp.as_str().splitn(2, ' ');
-    return None;
-    todo!();
+    let mut content = inp.as_str().splitn(2, ' ');
+    let cmd = content.next()?;
+    let path = content.next()?;
+    let loc = parse_number_value(cmd.chars())?;
+    let mut startpol = path.chars();
+    if startpol.next()? == '.' {
+        // Literal mode
+        match startpol.as_str().parse::<u32>() {
+            Ok(val) => Some(Commands::InsertLit { pos: loc, chr: val }),
+            Err(_) => None,
+        }
+    } else {
+        // Non literal mode
+        return Some(Commands::InsertStr {
+            pos: loc,
+            txt: parse_raw_escapement(path.chars())?,
+        });
+    }
+    //For the linteral
+    //return Some(Commands::Insert);
 }
 
 fn parse_render(inp: std::str::Chars) -> Option<Commands> {
