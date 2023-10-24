@@ -83,27 +83,9 @@ fn parse_kill(inp: std::str::Chars) -> Option<Commands> {
     if itr.next()? != ' ' {
         return None;
     }
-    let strfm = itr.as_str();
-    let strpfm = strfm.strip_prefix('0').unwrap_or(strfm);
-    // use this ::: i64::from_str_radix
-    match strpfm.strip_prefix('x') {
-        Some(rest) =>
-        // In hex
-        {
-            match u32::from_str_radix(rest, 16) {
-                Ok(val) => Some(Commands::Kill { pos: val }),
-                _ => None,
-            }
-        }
-        None =>
-        //In dec
-        {
-            match strfm.parse::<u32>() {
-                Ok(val) => Some(Commands::Kill { pos: val }),
-                Err(_) => None,
-            }
-        }
-    }
+    return Some(Commands::Kill {
+        pos: parse_number_value(itr)?,
+    });
 }
 
 fn parse_number_value(inp: std::str::Chars) -> Option<u32> {
@@ -185,8 +167,6 @@ fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
             txt: parse_raw_escapement(path.chars())?,
         });
     }
-    //For the linteral
-    //return Some(Commands::Insert);
 }
 
 fn parse_render(inp: std::str::Chars) -> Option<Commands> {
