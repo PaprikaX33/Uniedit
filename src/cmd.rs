@@ -48,6 +48,10 @@ fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
         _ => parse_cmd_dec(inp),
     }
 }
+
+/**
+TODO : NOT PARSING THE HEXADECIMAL CORRECTLY
+*/
 fn parse_cmd_dec(inp: std::str::Chars) -> Option<Commands> {
     match inp.as_str().parse::<u32>() {
         Ok(val) => Some(Commands::AppendLit(val)),
