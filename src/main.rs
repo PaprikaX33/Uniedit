@@ -6,7 +6,7 @@ fn stdreader() -> io::Result<String> {
     io::stdout().flush().unwrap();
     let mut input = String::new();
     let _ = io::stdin().read_line(&mut input)?;
-    return Ok(input);
+    Ok(input)
 }
 fn main() {
     let mut vecbuff: Vec<u32> = Vec::new();
@@ -15,16 +15,29 @@ fn main() {
         let input = match cmd::capture(&inp) {
             Some(x) => x,
             None => {
-                println!("Unknown command {}", inp);
+                println!("Unknown command {}", inp.trim());
                 continue;
             }
         };
         match input {
             cmd::Commands::Quit => break,
+            cmd::Commands::Erase => vecbuff.clear(),
             cmd::Commands::AppendLit(val) => vecbuff.push(val),
             cmd::Commands::AppendStr(mut val) => vecbuff.append(&mut val),
-            cmd::Commands::Print(_base) => {
-                println!("{:?}", vecbuff);
+            cmd::Commands::Print(base) => {
+                match base {
+                    cmd::RawBase::Dec => println!("{:?}", vecbuff),
+                    cmd::RawBase::Hex => println!("{:02X?}", vecbuff),
+                };
+            }
+            cmd::Commands::InsertLit { pos: ps, chr } => {
+                let pos = ps as usize;
+                if pos > vecbuff.len() {
+                    vecbuff.push(chr);
+                    continue;
+                } else {
+                    vecbuff.insert(pos, chr);
+                }
             }
             _ => todo!(),
         };
