@@ -1,6 +1,7 @@
 mod cmd;
 
 fn main() {
-    println!("Hello, world!");
-    print!("{:?}", cmd::capture(".20"));
+    println!("{:?}", cmd::capture(".ww"));
+    println!("{:?}", cmd::capture("230"));
+    println!("{:?}", cmd::capture("hello worlds"));
 }
