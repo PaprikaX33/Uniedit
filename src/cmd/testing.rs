@@ -184,3 +184,17 @@ fn parse_write() {
     assert_eq!(capture(".w32BE ./nyaaa"), None);
     assert_eq!(capture(".w32./nyaaa"), None);
 }
+
+#[test]
+fn parse_modify() {
+    assert_eq!(
+        capture(".m30 .20"),
+        Some(Commands::Modify { pos: 30, chr: 20 })
+    );
+    assert_eq!(
+        capture(".m2 99"),
+        Some(Commands::Modify { pos: 2, chr: 99 })
+    );
+    assert_eq!(capture(".m30.20"), None);
+    assert_eq!(capture(".m2--99"), None);
+}

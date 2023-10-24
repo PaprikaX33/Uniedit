@@ -39,6 +39,7 @@ fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
         'd' => final_check(itr, Commands::Decompress),
         'e' => final_check(itr, Commands::Erase),
         'v' => final_check(itr, Commands::Valid),
+        'm' => parse_modify(itr),
         'w' => parse_write(itr),
         'p' => parse_print(itr),
         'r' => parse_render(itr),
@@ -121,6 +122,17 @@ fn parse_print(inp: std::str::Chars) -> Option<Commands> {
     }
 }
 
+fn parse_modify(inp: std::str::Chars) -> Option<Commands> {
+    let mut content = inp.as_str().splitn(2, ' ');
+    let ps = content.next()?;
+    let cp = content.next()?;
+    let loc = parse_number_value(ps.chars())?;
+    let cptrim = cp.strip_prefix('.').unwrap_or(cp);
+    return match cptrim.parse::<u32>() {
+        Ok(val) => Some(Commands::Modify { pos: loc, chr: val }),
+        Err(_) => None,
+    };
+}
 fn parse_write(inp: std::str::Chars) -> Option<Commands> {
     let (is_32, itr) = string_exact_check(inp.clone(), "32".chars());
     if !is_32 {
@@ -150,9 +162,9 @@ fn parse_write(inp: std::str::Chars) -> Option<Commands> {
 }
 fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
     let mut content = inp.as_str().splitn(2, ' ');
-    let cmd = content.next()?;
+    let ps = content.next()?;
     let path = content.next()?;
-    let loc = parse_number_value(cmd.chars())?;
+    let loc = parse_number_value(ps.chars())?;
     let mut startpol = path.chars();
     if startpol.next()? == '.' {
         // Literal mode
