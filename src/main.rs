@@ -39,7 +39,52 @@ fn main() {
                     vecbuff.insert(pos, chr);
                 }
             }
-            _ => todo!(),
+            cmd::command_list::Commands::Write { .. } => todo!(),
+            cmd::command_list::Commands::Help => {
+                println!("Help Page Here")
+            }
+            cmd::command_list::Commands::Compress => todo!(),
+            cmd::command_list::Commands::Decompress => todo!(),
+            cmd::command_list::Commands::InsertStr { .. } => todo!(),
+            cmd::command_list::Commands::Modify { .. } => todo!(),
+            cmd::command_list::Commands::Kill { pos: ps } => {
+                let pos = ps as usize;
+                if pos >= vecbuff.len() {
+                    println!(
+                        "Unable to remove element number {}, as buffer only contains {} {}",
+                        pos,
+                        vecbuff.len(),
+                        if vecbuff.len() > 1 {
+                            "elements"
+                        } else {
+                            "element"
+                        }
+                    );
+                } else {
+                    vecbuff.remove(pos);
+                }
+            }
+            cmd::command_list::Commands::Render(_) => {
+                println!("{:?}", render_buffer(&vecbuff))
+            }
+            cmd::command_list::Commands::Valid => {
+                println!(
+                    "{}!",
+                    if render_buffer(&vecbuff).is_none() {
+                        "Invalid"
+                    } else {
+                        "Valid"
+                    }
+                )
+            }
         };
     }
+}
+
+fn render_buffer(vecbuff: &Vec<u32>) -> Option<Vec<char>> {
+    //vecbuff.iter().map(|&x| char::from_u32(x)?)
+    vecbuff.iter().try_fold(Vec::new(), |mut acc, &x| {
+        acc.push(char::from_u32(x)?);
+        Some(acc)
+    })
 }
