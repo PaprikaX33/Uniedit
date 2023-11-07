@@ -46,6 +46,12 @@ fn main() {
             cmd::command_list::Commands::Compress => todo!(),
             cmd::command_list::Commands::Decompress => todo!(),
             cmd::command_list::Commands::InsertStr { pos, txt } => {
+                let pos = if pos > vecbuff.len() {
+                    vecbuff.len()
+                } else {
+                    pos
+                };
+
                 let mut midbuffer = Vec::new();
                 midbuffer.extend(&vecbuff[..pos]);
                 midbuffer.extend(&txt);
@@ -53,8 +59,7 @@ fn main() {
                 vecbuff = midbuffer;
             }
             cmd::command_list::Commands::Modify { .. } => todo!(),
-            cmd::command_list::Commands::Kill { pos: ps } => {
-                let pos = ps as usize;
+            cmd::command_list::Commands::Kill { pos } => {
                 if pos >= vecbuff.len() {
                     println!(
                         "Unable to remove element number {}, as buffer only contains {} {}",
