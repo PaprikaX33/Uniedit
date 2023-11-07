@@ -58,7 +58,22 @@ fn main() {
                 midbuffer.extend(&vecbuff[pos..]);
                 vecbuff = midbuffer;
             }
-            cmd::command_list::Commands::Modify { .. } => todo!(),
+            cmd::command_list::Commands::Modify { pos, chr } => {
+                if pos >= vecbuff.len() {
+                    println!(
+                        "Unable to modify element number {}, as buffer only contains {} {}",
+                        pos,
+                        vecbuff.len(),
+                        if vecbuff.len() > 1 {
+                            "elements"
+                        } else {
+                            "element"
+                        }
+                    );
+                } else {
+                    vecbuff[pos] = chr;
+                }
+            }
             cmd::command_list::Commands::Kill { pos } => {
                 if pos >= vecbuff.len() {
                     println!(
