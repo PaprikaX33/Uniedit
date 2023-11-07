@@ -89,7 +89,7 @@ fn parse_kill(inp: std::str::Chars) -> Option<Commands> {
         return None;
     }
     Some(Commands::Kill {
-        pos: parse_number_value(itr)?,
+        pos: parse_number_value(itr)? as usize,
     })
 }
 
@@ -131,7 +131,10 @@ fn parse_modify(inp: std::str::Chars) -> Option<Commands> {
     let loc = parse_number_value(ps.chars())?;
     let cptrim = cp.strip_prefix('.').unwrap_or(cp);
     match cptrim.parse::<u32>() {
-        Ok(val) => Some(Commands::Modify { pos: loc, chr: val }),
+        Ok(val) => Some(Commands::Modify {
+            pos: loc as usize,
+            chr: val,
+        }),
         Err(_) => None,
     }
 }
