@@ -1,5 +1,6 @@
 mod cmd;
 use std::io::{self, Write};
+use unicode_normalization::UnicodeNormalization;
 
 fn stdreader() -> io::Result<String> {
     print!(">>");
@@ -43,8 +44,22 @@ fn main() {
             cmd::command_list::Commands::Help => {
                 println!("Help Page Here")
             }
-            cmd::command_list::Commands::Compress => todo!(),
-            cmd::command_list::Commands::Decompress => todo!(),
+            cmd::command_list::Commands::Compress => {
+                vecbuff = vecbuff
+                    .iter()
+                    .map(|&code_point| char::from_u32(code_point).unwrap())
+                    .nfc()
+                    .map(|code_point| code_point as u32)
+                    .collect();
+            }
+            cmd::command_list::Commands::Decompress => {
+                vecbuff = vecbuff
+                    .iter()
+                    .map(|&code_point| char::from_u32(code_point).unwrap())
+                    .nfd()
+                    .map(|code_point| code_point as u32)
+                    .collect();
+            }
             cmd::command_list::Commands::InsertStr { .. } => todo!(),
             cmd::command_list::Commands::Modify { .. } => todo!(),
             cmd::command_list::Commands::Kill { pos: ps } => {
