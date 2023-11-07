@@ -103,7 +103,7 @@ pub enum Commands {
     /// as listed in [AppendLit](Commands::AppendLit).
     ///
     /// Additional information see [AppendLit](Commands::AppendLit).
-    InsertLit { pos: u32, chr: u32 },
+    InsertLit { pos: usize, chr: u32 },
     /// Performs string insertion in position in the buffer
     /// # Command
     /// + `.iddd <str>`
@@ -118,7 +118,7 @@ pub enum Commands {
     /// see escaping in [AppendStr](Commands::AppendStr).
     ///
     /// Additional information see [AppendLit](Commands::AppendLit).
-    InsertStr { pos: u32, txt: Vec<u32> },
+    InsertStr { pos: usize, txt: Vec<u32> },
     /// Modify or replace a codepoint in position
     /// # Command
     /// + `.mddd <codepoint>`

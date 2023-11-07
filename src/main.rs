@@ -31,7 +31,7 @@ fn main() {
                 };
             }
             cmd::Commands::InsertLit { pos: ps, chr } => {
-                let pos = ps as usize;
+                let pos = ps;
                 if pos > vecbuff.len() {
                     vecbuff.push(chr);
                     continue;
@@ -45,7 +45,13 @@ fn main() {
             }
             cmd::command_list::Commands::Compress => todo!(),
             cmd::command_list::Commands::Decompress => todo!(),
-            cmd::command_list::Commands::InsertStr { .. } => todo!(),
+            cmd::command_list::Commands::InsertStr { pos, txt } => {
+                let mut midbuffer = Vec::new();
+                midbuffer.extend(&vecbuff[..pos]);
+                midbuffer.extend(&txt);
+                midbuffer.extend(&vecbuff[pos..]);
+                vecbuff = midbuffer;
+            }
             cmd::command_list::Commands::Modify { .. } => todo!(),
             cmd::command_list::Commands::Kill { pos: ps } => {
                 let pos = ps as usize;

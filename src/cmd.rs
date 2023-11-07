@@ -169,13 +169,16 @@ fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
     if startpol.next()? == '.' {
         // Literal mode
         match startpol.as_str().parse::<u32>() {
-            Ok(val) => Some(Commands::InsertLit { pos: loc, chr: val }),
+            Ok(val) => Some(Commands::InsertLit {
+                pos: loc as usize,
+                chr: val,
+            }),
             Err(_) => None,
         }
     } else {
         // Non literal mode
         Some(Commands::InsertStr {
-            pos: loc,
+            pos: loc as usize,
             txt: parse_raw_escapement(path.chars())?,
         })
     }
