@@ -56,6 +56,14 @@ pub enum Commands {
     /// Write does not perform any processing on the filename, therefore the escaping mechanism
     /// in [AppendLit](Commands::AppendLit) is bypassed.
     Write { enc: EncodingType, file: String },
+    /// Open and read a file to the buffer
+    /// # Command
+    /// + `.o <file>` : Read the *file* and store its content in the buffer
+    /// # Note
+    /// Read does not perform any processing nor length check on the file.
+    /// Therefore the responsibility to ensure enough memory,
+    /// and the validity of the file is left to the user
+    Read { file: String },
     /// The help page of the program
     /// Should print all of the available command and the usage
     /// # Command

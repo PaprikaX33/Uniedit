@@ -41,6 +41,7 @@ fn main() {
                 }
             }
             cmd::command_list::Commands::Write { .. } => todo!(),
+            cmd::command_list::Commands::Read { .. } => todo!(),
             cmd::command_list::Commands::Help => {
                 println!("Help Page Here")
             }
