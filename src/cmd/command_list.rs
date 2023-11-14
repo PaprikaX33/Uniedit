@@ -103,7 +103,7 @@ pub enum Commands {
     /// as listed in [AppendLit](Commands::AppendLit).
     ///
     /// Additional information see [AppendLit](Commands::AppendLit).
-    InsertLit { pos: u32, chr: u32 },
+    InsertLit { pos: usize, chr: u32 },
     /// Performs string insertion in position in the buffer
     /// # Command
     /// + `.iddd <str>`
@@ -118,7 +118,7 @@ pub enum Commands {
     /// see escaping in [AppendStr](Commands::AppendStr).
     ///
     /// Additional information see [AppendLit](Commands::AppendLit).
-    InsertStr { pos: u32, txt: Vec<u32> },
+    InsertStr { pos: usize, txt: Vec<u32> },
     /// Modify or replace a codepoint in position
     /// # Command
     /// + `.mddd <codepoint>`
@@ -127,7 +127,7 @@ pub enum Commands {
     ///
     /// As it is only capable to replace a single character, a leading `.` to denote codepoint
     /// is not required, but for clarity, a leading . is recomended.
-    Modify { pos: u32, chr: u32 },
+    Modify { pos: usize, chr: u32 },
     /// Kill or delete a character from the stream
     /// # Command
     /// + `.k ddd`
@@ -137,7 +137,7 @@ pub enum Commands {
     /// Where `d` is decimal digit, and `n` is hexadecimal digit
     /// # Note
     /// All stream following the removed character is pushed forward
-    Kill { pos: u32 },
+    Kill { pos: usize },
     /// Print the current buffer
     ///
     /// Printing the buffer does not render the content of the buffer to the unicode,

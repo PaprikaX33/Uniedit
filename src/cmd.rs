@@ -48,6 +48,10 @@ fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
         _ => parse_cmd_dec(inp),
     }
 }
+
+/**
+TODO : NOT PARSING THE HEXADECIMAL CORRECTLY
+*/
 fn parse_cmd_dec(inp: std::str::Chars) -> Option<Commands> {
     match inp.as_str().parse::<u32>() {
         Ok(val) => Some(Commands::AppendLit(val)),
@@ -85,7 +89,7 @@ fn parse_kill(inp: std::str::Chars) -> Option<Commands> {
         return None;
     }
     Some(Commands::Kill {
-        pos: parse_number_value(itr)?,
+        pos: parse_number_value(itr)? as usize,
     })
 }
 
@@ -127,7 +131,10 @@ fn parse_modify(inp: std::str::Chars) -> Option<Commands> {
     let loc = parse_number_value(ps.chars())?;
     let cptrim = cp.strip_prefix('.').unwrap_or(cp);
     match cptrim.parse::<u32>() {
-        Ok(val) => Some(Commands::Modify { pos: loc, chr: val }),
+        Ok(val) => Some(Commands::Modify {
+            pos: loc as usize,
+            chr: val,
+        }),
         Err(_) => None,
     }
 }
@@ -165,13 +172,16 @@ fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
     if startpol.next()? == '.' {
         // Literal mode
         match startpol.as_str().parse::<u32>() {
-            Ok(val) => Some(Commands::InsertLit { pos: loc, chr: val }),
+            Ok(val) => Some(Commands::InsertLit {
+                pos: loc as usize,
+                chr: val,
+            }),
             Err(_) => None,
         }
     } else {
         // Non literal mode
         Some(Commands::InsertStr {
-            pos: loc,
+            pos: loc as usize,
             txt: parse_raw_escapement(path.chars())?,
         })
     }
