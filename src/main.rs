@@ -41,7 +41,18 @@ fn main() {
                 }
             }
             cmd::command_list::Commands::Write { .. } => todo!(),
-            cmd::command_list::Commands::Read { .. } => todo!(),
+            cmd::command_list::Commands::Read { file } => {
+                vecbuff = match std::fs::read(file.as_str()) {
+                    Ok(x) => x,
+                    Err(_) => {
+                        println!("Unable to open file {}", file);
+                        continue;
+                    }
+                }
+                .iter()
+                .map(|x| *x as u32)
+                .collect();
+            }
             cmd::command_list::Commands::Help => {
                 println!("Help Page Here")
             }
