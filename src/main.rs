@@ -11,7 +11,6 @@ fn stdreader() -> io::Result<String> {
 }
 fn main() {
     let mut vecbuff: Vec<u32> = Vec::new();
-    println!("{:?}", cmd::capture("hello worlds"));
     while let Ok(inp) = stdreader() {
         let input = match cmd::capture(&inp) {
             Some(x) => x,
@@ -73,15 +72,15 @@ fn main() {
                 };
             }
             cmd::command_list::Commands::Read { file } => {
-                vecbuff = match std::fs::read(file.as_str()) {
+                vecbuff = match std::fs::read_to_string(file.as_str()) {
                     Ok(x) => x,
                     Err(_) => {
                         println!("Unable to open file {}", file);
                         continue;
                     }
                 }
-                .iter()
-                .map(|x| *x as u32)
+                .chars()
+                .map(|x| x as u32)
                 .collect();
             }
             cmd::command_list::Commands::Help => {
