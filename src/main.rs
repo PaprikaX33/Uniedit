@@ -53,13 +53,19 @@ fn main() {
                         };
                     }
                     cmd::command_list::EncodingType::UTF32 => {
-                        match std::fs::write(file.as_str(), bitsplitter(&vecbuff, false)) {
+                        let mut splitted: Vec<u8> = bitsplitter(&vecbuff, false);
+                        let mut comb: Vec<u8> = vec![0x00 as u8, 0x00, 0xFE, 0xFF];
+                        comb.append(&mut splitted);
+                        match std::fs::write(file.as_str(), comb) {
                             Ok(_) => (),
                             Err(_) => println!("Unable to write to file {}", file),
                         };
                     }
                     cmd::command_list::EncodingType::UTF32LE => {
-                        match std::fs::write(file.as_str(), bitsplitter(&vecbuff, true)) {
+                        let mut splitted: Vec<u8> = bitsplitter(&vecbuff, true);
+                        let mut comb: Vec<u8> = vec![0xFF as u8, 0xFE, 0x00, 0x00];
+                        comb.append(&mut splitted);
+                        match std::fs::write(file.as_str(), comb) {
                             Ok(_) => (),
                             Err(_) => println!("Unable to write to file {}", file),
                         };
