@@ -40,6 +40,7 @@ fn parse_cmd_selection(inp: std::str::Chars) -> Option<Commands> {
         'e' => final_check(itr, Commands::Erase),
         'v' => final_check(itr, Commands::Valid),
         'm' => parse_modify(itr),
+        'o' => parse_read(itr),
         'w' => parse_write(itr),
         'p' => parse_print(itr),
         'r' => parse_render(itr),
@@ -165,6 +166,15 @@ fn parse_write(inp: std::str::Chars) -> Option<Commands> {
         })
     }
 }
+
+fn parse_read(inp: std::str::Chars) -> Option<Commands> {
+    return parse_rear(inp.clone(), |fpath| {
+        Some(Commands::Read {
+            file: fpath.to_string(),
+        })
+    });
+}
+
 fn parse_insertion(inp: std::str::Chars) -> Option<Commands> {
     let (ps, path) = inp.as_str().split_once(' ')?;
     let loc = parse_number_value(ps.chars())?;

@@ -11,7 +11,6 @@ fn stdreader() -> io::Result<String> {
 }
 fn main() {
     let mut vecbuff: Vec<u32> = Vec::new();
-    println!("{:?}", cmd::capture("hello worlds"));
     while let Ok(inp) = stdreader() {
         let input = match cmd::capture(&inp) {
             Some(x) => x,
@@ -40,7 +39,50 @@ fn main() {
                     vecbuff.insert(pos, chr);
                 }
             }
-            cmd::command_list::Commands::Write { .. } => todo!(),
+            cmd::command_list::Commands::Write { enc, file } => {
+                let Some(utf_rep) = render_buffer(&vecbuff) else {
+                    println!("The buffer is not in a valid state");
+                    continue;
+                };
+                match enc {
+                    cmd::command_list::EncodingType::UTF8 => {
+                        match std::fs::write(file.as_str(), utf_rep.iter().collect::<String>()) {
+                            Ok(_) => (),
+                            Err(_) => println!("Unable to write to file {}", file),
+                        };
+                    }
+                    cmd::command_list::EncodingType::UTF32 => {
+                        let mut splitted: Vec<u8> = bitsplitter(&vecbuff, false);
+                        let mut comb: Vec<u8> = vec![0x00 as u8, 0x00, 0xFE, 0xFF];
+                        comb.append(&mut splitted);
+                        match std::fs::write(file.as_str(), comb) {
+                            Ok(_) => (),
+                            Err(_) => println!("Unable to write to file {}", file),
+                        };
+                    }
+                    cmd::command_list::EncodingType::UTF32LE => {
+                        let mut splitted: Vec<u8> = bitsplitter(&vecbuff, true);
+                        let mut comb: Vec<u8> = vec![0xFF as u8, 0xFE, 0x00, 0x00];
+                        comb.append(&mut splitted);
+                        match std::fs::write(file.as_str(), comb) {
+                            Ok(_) => (),
+                            Err(_) => println!("Unable to write to file {}", file),
+                        };
+                    }
+                };
+            }
+            cmd::command_list::Commands::Read { file } => {
+                vecbuff = match std::fs::read_to_string(file.as_str()) {
+                    Ok(x) => x,
+                    Err(_) => {
+                        println!("Unable to open file {}", file);
+                        continue;
+                    }
+                }
+                .chars()
+                .map(|x| x as u32)
+                .collect();
+            }
             cmd::command_list::Commands::Help => {
                 println!("Help Page Here")
             }
@@ -105,9 +147,10 @@ fn main() {
                     vecbuff.remove(pos);
                 }
             }
-            cmd::command_list::Commands::Render(_) => {
-                println!("{:?}", render_buffer(&vecbuff))
-            }
+            cmd::command_list::Commands::Render(_) => match render_buffer(&vecbuff) {
+                Some(x) => println!("{:?}", x),
+                None => println!("Unable to render the buffer"),
+            },
             cmd::command_list::Commands::Valid => {
                 println!(
                     "{}!",
@@ -128,4 +171,28 @@ fn render_buffer(vecbuff: &Vec<u32>) -> Option<Vec<char>> {
         acc.push(char::from_u32(x)?);
         Some(acc)
     })
+}
+
+fn bitsplitter(inp: &Vec<u32>, big_endian: bool) -> Vec<u8> {
+    inp.iter()
+        .flat_map(if big_endian {
+            |val| {
+                vec![
+                    ((val >> 24) as u32 & 0xff) as u8,
+                    ((val >> 16) as u32 & 0xff) as u8,
+                    ((val >> 8) as u32 & 0xff) as u8,
+                    ((val >> 0) as u32 & 0xff) as u8,
+                ]
+            }
+        } else {
+            |val| {
+                vec![
+                    ((val >> 0) as u32 & 0xff) as u8,
+                    ((val >> 8) as u32 & 0xff) as u8,
+                    ((val >> 16) as u32 & 0xff) as u8,
+                    ((val >> 24) as u32 & 0xff) as u8,
+                ]
+            }
+        })
+        .collect()
 }
